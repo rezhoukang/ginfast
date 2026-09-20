@@ -117,7 +117,7 @@ func InitRoutes(engine *gin.Engine) {
 				users.PUT("/updateBasicInfo", userControllers.UpdateBasicInfo)
 				// 切换租户（多租户开启时才注册）
 				if tenanthelper.MultiTenantEnabled() {
-					users.GET("/switchTenant/:tenantId", userControllers.SwitchTenant)
+					users.POST("/switchTenant/:tenantId", userControllers.SwitchTenant)
 				}
 			}
 

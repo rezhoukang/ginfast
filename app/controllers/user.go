@@ -758,7 +758,7 @@ func (uc *UserController) UpdateBasicInfo(c *gin.Context) {
 // @Failure 400 {object} map[string]interface{} "请求参数错误"
 // @Failure 401 {object} map[string]interface{} "用户未登录"
 // @Failure 403 {object} map[string]interface{} "租户不存在或未启用"
-// @Router /users/switchTenant/{tenantId} [get]
+// @Router /users/switchTenant/{tenantId} [post]
 // @Security ApiKeyAuth
 func (uc *UserController) SwitchTenant(c *gin.Context) {
 	// 从上下文中获取用户信息

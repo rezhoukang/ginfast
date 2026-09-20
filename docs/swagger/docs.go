@@ -6689,7 +6689,7 @@ const docTemplate = `{
             }
         },
         "/users/switchTenant/{tenantId}": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -7143,10 +7143,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "chunkSize",
-                "fileMd5",
                 "fileName",
-                "fileSize",
-                "totalChunks"
+                "fileSize"
             ],
             "properties": {
                 "chunkSize": {
@@ -7169,10 +7167,8 @@ const docTemplate = `{
         "models.ChunkMergeRequest": {
             "type": "object",
             "required": [
-                "fileMd5",
                 "fileName",
-                "fileSize",
-                "totalChunks"
+                "fileSize"
             ],
             "properties": {
                 "fileMd5": {

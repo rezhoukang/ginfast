@@ -6683,7 +6683,7 @@
             }
         },
         "/users/switchTenant/{tenantId}": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -7137,10 +7137,8 @@
             "type": "object",
             "required": [
                 "chunkSize",
-                "fileMd5",
                 "fileName",
-                "fileSize",
-                "totalChunks"
+                "fileSize"
             ],
             "properties": {
                 "chunkSize": {
@@ -7163,10 +7161,8 @@
         "models.ChunkMergeRequest": {
             "type": "object",
             "required": [
-                "fileMd5",
                 "fileName",
-                "fileSize",
-                "totalChunks"
+                "fileSize"
             ],
             "properties": {
                 "fileMd5": {
