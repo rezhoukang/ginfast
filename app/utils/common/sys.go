@@ -63,6 +63,7 @@ func KeepLettersOnly(s string) string {
 }
 
 // KeepLettersOnlyLower 只保留字符串中的英文字母，并且全部转换为小写
+// 未被使用
 func KeepLettersOnlyLower(s string) string {
 	var result strings.Builder
 	result.Grow(len(s))
