@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strings"
 	"gin-fast/app/global/app"
 	"time"
 
@@ -87,13 +88,29 @@ func (l *SysJobsList) GetTotal(c context.Context, query ...func(*gorm.DB) *gorm.
 	return count, err
 }
 
-// GetParameters 解析任务参数JSON字符串为map
-func (m *SysJobs) GetParameters() (map[string]interface{}, error) {
+// ParseJobParameters 校验并解析任务参数JSON字符串
+// 空白串返回nil；调度器Job.Parameters为map类型，参数必须是JSON对象，否则返回友好错误
+func ParseJobParameters(s string) (map[string]interface{}, error) {
 	var parameters map[string]interface{}
-	if m.Parameters != "" {
-		if err := json.Unmarshal([]byte(m.Parameters), &parameters); err != nil {
-			return nil, errors.New("任务参数JSON格式错误: " + err.Error())
-		}
+	if strings.TrimSpace(s) == "" {
+		return nil, nil
+	}
+	if err := json.Unmarshal([]byte(s), &parameters); err != nil {
+		return nil, errors.New(`任务参数必须是JSON对象格式，例如 {"param1": "value1"}`)
 	}
 	return parameters, nil
+}
+
+// NormalizeJobParameters 规范化任务参数的入库值：空白串存储"{}"
+// sys_jobs.parameters为JSON类型列（MySQL/PG），不接受空字符串文档
+func NormalizeJobParameters(s string) string {
+	if strings.TrimSpace(s) == "" {
+		return "{}"
+	}
+	return s
+}
+
+// GetParameters 解析任务参数JSON字符串为map
+func (m *SysJobs) GetParameters() (map[string]interface{}, error) {
+	return ParseJobParameters(m.Parameters)
 }

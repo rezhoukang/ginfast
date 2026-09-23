@@ -1,7 +1,6 @@
 package service
 
 import (
-	"encoding/json"
 	"errors"
 	"time"
 
@@ -30,11 +29,9 @@ func (s *SysJobsService) Create(c *gin.Context, req models.SysJobsCreateRequest)
 	}
 
 	// 解析任务参数JSON字符串
-	var parameters map[string]interface{}
-	if req.Parameters != "" {
-		if err := json.Unmarshal([]byte(req.Parameters), &parameters); err != nil {
-			return nil, errors.New("任务参数JSON格式错误: " + err.Error())
-		}
+	parameters, err := models.ParseJobParameters(req.Parameters)
+	if err != nil {
+		return nil, err
 	}
 
 	// 先入库生成记录（DB 为事实源），提前生成 jobID
@@ -48,7 +45,7 @@ func (s *SysJobsService) Create(c *gin.Context, req models.SysJobsCreateRequest)
 	sysJobs.ExecutionPolicy = req.ExecutionPolicy
 	sysJobs.Status = req.Status
 	sysJobs.CronExpression = req.CronExpression
-	sysJobs.Parameters = req.Parameters
+	sysJobs.Parameters = models.NormalizeJobParameters(req.Parameters)
 	sysJobs.BlockingPolicy = req.BlockingPolicy
 	sysJobs.Timeout = req.Timeout
 	sysJobs.MaxRetry = req.MaxRetry
@@ -95,11 +92,9 @@ func (s *SysJobsService) Update(c *gin.Context, req models.SysJobsUpdateRequest)
 	}
 
 	// 解析任务参数JSON字符串
-	var parameters map[string]interface{}
-	if req.Parameters != "" {
-		if err := json.Unmarshal([]byte(req.Parameters), &parameters); err != nil {
-			return errors.New("任务参数JSON格式错误: " + err.Error())
-		}
+	parameters, err := models.ParseJobParameters(req.Parameters)
+	if err != nil {
+		return err
 	}
 
 	// 先更新数据库（DB 为事实源）
@@ -115,7 +110,7 @@ func (s *SysJobsService) Update(c *gin.Context, req models.SysJobsUpdateRequest)
 	sysJobs.ExecutionPolicy = req.ExecutionPolicy
 	sysJobs.Status = req.Status
 	sysJobs.CronExpression = req.CronExpression
-	sysJobs.Parameters = req.Parameters
+	sysJobs.Parameters = models.NormalizeJobParameters(req.Parameters)
 	sysJobs.BlockingPolicy = req.BlockingPolicy
 	sysJobs.Timeout = req.Timeout
 	sysJobs.MaxRetry = req.MaxRetry
